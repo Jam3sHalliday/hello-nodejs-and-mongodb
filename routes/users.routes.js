@@ -1,4 +1,3 @@
-
 const express = require('express');
 
 const {
@@ -17,18 +16,25 @@ const {
     getAllUsers,
     getUser,
     updateUser,
+    getMe,
 } = require('../controllers/users.controller');
+
+const {
+    createReview,
+} = require('../controllers/review.controller');
 
 const r = express.Router();
 
 r.post('/signup', signup);
 r.post('/login', login);
 
+r.get('/me', protector, getMe, getUser)
 r.post('/forgot-password', forgotPassword);
 r.patch('/reset-password/:token', resetPassword);
 r.patch('/update-password/', protector, updatePassword);
 r.patch('/update-me/', protector, updateMe);
 r.delete('/delete-me', protector, deleteMe);
+
 
 r
     .route('/')

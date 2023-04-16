@@ -1,12 +1,11 @@
 const crypto = require('crypto');
-const { promisify } = require('util');
+// const { promisify } = require('util');
 const jwt = require('jsonwebtoken');
 const User = require('../models/users.model');
-const { catchAsync } = require('../utils/functions');
+const { catchAsync, decodeJwt } = require('../utils/functions');
 const AppError = require('../utils/appError');
 const sendEmail = require('../email');
 const bcrypt = require('bcryptjs');
-const jwt_decode = require('jwt-decode');
 
 const signToken = id => {
     return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -89,7 +88,7 @@ exports.protector = catchAsync(async (req, res, n) => {
     // verification token
     // const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
     const decoded = await jwt.verify(token, process.env.JWT_SECRET);
-
+    
     // check if user still exist
     const freshUser = await User.findById(decoded.id);
     if (!freshUser) n(new AppError('The user belonging to this token is no longer exist'), 401)
@@ -179,7 +178,7 @@ exports.updatePassword = catchAsync(async (req, res, n) => {
         newPasswordConfirm,
     } = req.body;
 
-    const { id } = jwt_decode(authorization.split(' ')[1]);
+    const { id } = decodeJwt(authorization);
 
     // get user from collection
     const user = await User.findById(id).select('+password');

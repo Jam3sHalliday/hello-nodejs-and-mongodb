@@ -14,11 +14,14 @@ const {
     getTourStats,
     getMonthlyPlan,
 } = require('../controllers/tours.controller');
+const reviewRouter = require('./review.routes');
 
 const r = express.Router();
 
 r.route('/stats').get(getTourStats);
 r.route('/monthly-plan/:year').get(getMonthlyPlan);
+
+r.use('/:tourId/reviews', reviewRouter);
 
 r
     .route('/')
@@ -31,6 +34,5 @@ r
     .get(getTour)
     .patch(updateTour)
     .delete(protector, restrictTo('admin', 'lead-guide'), deleteTour);
-
 
 module.exports = r;

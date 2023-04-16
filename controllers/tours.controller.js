@@ -2,6 +2,7 @@ const Tour = require('../models/tours.model');
 const APIFeatures = require('../utils/apiFeatures');
 const AppError = require('../utils/appError');
 const { catchAsync } = require('../utils/functions');
+const { deleteOne, updateOne, createOne, getOne } = require('./handlerFactory')
 // const tours = JSON.parse(fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`));
 
 const aliasTopTours = (req, res, next) => {
@@ -30,54 +31,11 @@ const getAllTours = catchAsync(async (req, res, next) => {
         });
 });
 
-const createTour = catchAsync(async (req, res) => {
-    const newTour = await Tour.create(req.body);
+const getTour = getOne(Tour, { path: 'reviews' });
+const createTour = createOne(Tour);
+const updateTour = updateOne(Tour);
+const deleteTour = deleteOne(Tour);
 
-    return res
-        .status(201)
-        .json({
-            status: "success",
-            data: newTour,
-        })
-});
-
-const getTour = catchAsync(async (req, res) => {
-    // const tour = await Tour.find({ _id: req.params.id });
-    const tour = await Tour.findById(req.params.id).populate('reviews');
-    if (!tour) return next(new AppError('No tour found with that ID', 400));
-
-    return res
-        .status(200)
-        .json({
-            status: "success",
-            data: tour,
-        })
-
-});
-
-const updateTour = catchAsync(async (req, res) => {
-    const tour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
-        new: true,
-        runValidators: true,
-    });
-
-    if (!tour) return next(new AppError('No tour found with that ID', 400));
-
-    return res.status(200).json({
-        status: 'success',
-        data: tour,
-    })
-})
-
-const deleteTour = catchAsync(async (req, res) => {
-    const tour = await Tour.findByIdAndDelete(req.params.id);
-    if (!tour) return next(new AppError('No tour found with that ID', 400));
-
-    return res.status(204).json({
-        status: 'success',
-        data: null,
-    })
-})
 
 const getTourStats = catchAsync(async (req, res) => {
     const stats = await Tour.aggregate([
