@@ -123,7 +123,6 @@ exports.forgotPassword = catchAsync(async (req, res, n) => {
 
     // send it to user's email
     const resetURL = `${req.protocol}://${req.get('host')}/api/v1/users/reset-password/${resetToken}`;
-    console.log(resetURL);
     const message = `Forgot your password? Submit a PATCH request to your new password and password confirm to: ${resetURL}.\n If you didn't forget your password. Please ignore this email!`
 
     try {
@@ -208,7 +207,6 @@ exports.updateMe = catchAsync(async (req, res, n) => {
         name,
         email,
     } = req.body;
-    console.log('function run', req.body)
 
     if (password || passwordConfirm) {
         return n(new AppError('This route is not for updating password', 400));
