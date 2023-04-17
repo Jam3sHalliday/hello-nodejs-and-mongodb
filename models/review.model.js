@@ -30,6 +30,8 @@ const ReviewSchema = new mongoose.Schema({
     toObject: { virtuals: true }
 });
 
+ReviewSchema.index({ tour: 1, user: 1 }, { unique: true });
+
 ReviewSchema.pre(/^find/, function (n) {
     this.populate({
         path: 'user',
@@ -45,9 +47,7 @@ ReviewSchema.pre(/^find/, function (n) {
 
 ReviewSchema.pre(/^findOneAnd/, async function (n) {
     this.r = await this.findOne().clone();
-
-    console.log(r);
-    // n();
+    n();
 })
 
 ReviewSchema.post('save', function() {
