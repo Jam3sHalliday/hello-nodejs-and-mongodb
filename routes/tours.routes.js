@@ -18,15 +18,15 @@ const reviewRouter = require('./review.routes');
 
 const r = express.Router();
 
-r.route('/stats').get(getTourStats);
+r.route('/stats', restrictTo('admin', 'lead-guide', 'guide')).get(getTourStats);
 r.route('/monthly-plan/:year').get(getMonthlyPlan);
 
 r.use('/:tourId/reviews', reviewRouter);
 
 r
     .route('/')
-    .get(protector, getAllTours)
-    .post(createTour);
+    .get(getAllTours)
+    .post(protector, restrictTo('lead-guide', 'admin'), createTour);
 
 
 r

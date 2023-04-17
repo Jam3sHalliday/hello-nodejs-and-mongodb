@@ -9,6 +9,7 @@ const {
     protector,
     updateMe,
     deleteMe,
+    restrictTo,
 } = require('../controllers/auth.controller');
 const {
     createUser,
@@ -19,22 +20,21 @@ const {
     getMe,
 } = require('../controllers/users.controller');
 
-const {
-    createReview,
-} = require('../controllers/review.controller');
-
 const r = express.Router();
 
 r.post('/signup', signup);
 r.post('/login', login);
-
-r.get('/me', protector, getMe, getUser)
 r.post('/forgot-password', forgotPassword);
 r.patch('/reset-password/:token', resetPassword);
-r.patch('/update-password/', protector, updatePassword);
-r.patch('/update-me/', protector, updateMe);
-r.delete('/delete-me', protector, deleteMe);
 
+r.use(protector);
+
+r.get('/me', getMe, getUser)
+r.patch('/update-password/', updatePassword);
+r.patch('/update-me/', updateMe);
+r.delete('/delete-me', deleteMe);
+
+r.use(restrictTo('admin'));
 
 r
     .route('/')

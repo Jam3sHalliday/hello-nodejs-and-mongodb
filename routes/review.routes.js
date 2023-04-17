@@ -13,6 +13,8 @@ const {
 
 const r = express.Router({ mergeParams: true });
 
+r.use(protector);
+
 r
     .route('/')
     .get(getAllReviews)
@@ -21,7 +23,7 @@ r
 r
     .route('/:id')
     .get(protector, restrictTo('user'), getReview)
-    .patch(protector, restrictTo('user'), updateReview)
-    .delete(protector, restrictTo('user'), deleteReview)
+    .patch(protector, restrictTo('user', 'admin'), updateReview)
+    .delete(protector, restrictTo('user', 'admin'), deleteReview)
 
 module.exports = r;
