@@ -13,6 +13,8 @@ const {
     deleteTour,
     getTourStats,
     getMonthlyPlan,
+    getToursWithin,
+    getDistances,
 } = require('../controllers/tours.controller');
 const reviewRouter = require('./review.routes');
 
@@ -22,6 +24,14 @@ r.route('/stats', restrictTo('admin', 'lead-guide', 'guide')).get(getTourStats);
 r.route('/monthly-plan/:year').get(getMonthlyPlan);
 
 r.use('/:tourId/reviews', reviewRouter);
+ 
+r
+    .route('/tours-within/:distance/center/:latlng/unit/:unit')
+    .get(getToursWithin)
+
+r
+    .route('/distances/:latlng/unit/:unit')
+    .get(getDistances)
 
 r
     .route('/')
